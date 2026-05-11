@@ -1,24 +1,26 @@
 import React, { useMemo } from 'react';
-import { MOCK_RECORDS } from '../data/mockData';
+import { useRecords } from '../RecordContext';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, Legend, LineChart, Line 
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { 
-  Users, ClipboardCheck, Clock, MapPin, 
-  TrendingUp, Activity, ShieldCheck, HeartPulse 
+  Users, Clock, MapPin, 
+  TrendingUp, Activity, ShieldCheck 
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 
 export default function Dashboard() {
+  const { records, isLoading } = useRecords();
+
   const stats = useMemo(() => {
-    const total = MOCK_RECORDS.length;
-    const processing = MOCK_RECORDS.filter(r => r.resolutionStatus === 'Đang xử lý').length;
-    const completed = MOCK_RECORDS.filter(r => r.resolutionStatus === 'Hoàn thành').length;
+    const total = records.length;
+    const processing = records.filter(r => r.resolutionStatus === 'Đang xử lý').length;
+    const completed = records.filter(r => r.resolutionStatus === 'Hoàn thành').length;
     
     // Stats by Phuong
-    const phuongStats = MOCK_RECORDS.reduce((acc, current) => {
+    const phuongStats = records.reduce((acc, current) => {
       const phuong = current.phuong || 'Khác';
       acc[phuong] = (acc[phuong] || 0) + 1;
       return acc;
@@ -27,7 +29,7 @@ export default function Dashboard() {
     const phuongData = Object.entries(phuongStats).map(([name, value]) => ({ name, value }));
 
     // Stats by Type (Category)
-    const categoryStats = MOCK_RECORDS.reduce((acc, current) => {
+    const categoryStats = records.reduce((acc, current) => {
       const category = current.category || 'Chưa phân loại';
       acc[category] = (acc[category] || 0) + 1;
       return acc;
@@ -36,7 +38,7 @@ export default function Dashboard() {
     const categoryData = Object.entries(categoryStats).map(([name, value]) => ({ name, value }));
 
     return { total, processing, completed, phuongData, categoryData };
-  }, []);
+  }, [records]);
 
   const COLORS = ['#ff3000', '#77011f', '#fced31', '#0ea5e9', '#10b981'];
 
@@ -142,6 +144,13 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {isLoading && (
+        <div className="fixed bottom-8 right-8 bg-white shadow-2xl p-4 rounded-2xl border flex items-center gap-3 animate-bounce">
+            <div className="w-2 h-2 rounded-full bg-brand-primary animate-ping" />
+            <span className="text-xs font-bold text-slate-600">Đang tải dữ liệu từ Google Sheets...</span>
+        </div>
+      )}
+
       {/* GIS Visual Mock */}
       <div className="glass-card p-6 space-y-6 overflow-hidden">
         <div className="flex items-center justify-between">
@@ -160,7 +169,7 @@ export default function Dashboard() {
             
             {/* Heatmap/Pin Layers */}
             <div className="absolute inset-0 p-8">
-                {MOCK_RECORDS.map((record, i) => (
+                {records.map((record, i) => (
                     <motion.div
                         key={record.id}
                         initial={{ scale: 0 }}

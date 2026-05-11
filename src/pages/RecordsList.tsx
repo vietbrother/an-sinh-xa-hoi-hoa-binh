@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { MOCK_RECORDS } from '../data/mockData';
 import { useAuth } from '../AuthContext';
+import { useRecords } from '../RecordContext';
 import { SocialRecord } from '../types';
 import { 
   Search, Filter, ChevronRight, MapPin, 
@@ -14,10 +15,11 @@ import { format } from 'date-fns';
 
 export default function RecordsList() {
   const { user } = useAuth();
+  const { records, isLoading, refreshRecords } = useRecords();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [selectedRecord, setSelectedRecord] = useState<SocialRecord | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   
   // Processing Form State
   const [processingData, setProcessingData] = useState({
@@ -27,7 +29,7 @@ export default function RecordsList() {
   });
 
   const filteredRecords = useMemo(() => {
-    return MOCK_RECORDS.filter(record => {
+    return records.filter(record => {
       const matchesSearch = 
         record.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         record.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -37,11 +39,11 @@ export default function RecordsList() {
       
       return matchesSearch && matchesFilter;
     });
-  }, [searchTerm, filterStatus]);
+  }, [searchTerm, filterStatus, records]);
 
   const handleProcess = async () => {
     if (!selectedRecord) return;
-    setIsProcessing(true);
+    setIsUpdating(true);
     
     // Payload for Google App Script
     const payload = {
@@ -52,14 +54,23 @@ export default function RecordsList() {
       ketQua: processingData.ketQua
     };
 
-    console.log('Sending to Google App Script:', payload);
-    
-    // Simulated API Call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    alert(`Đã cập nhật hồ sơ ${selectedRecord.id} thành công! (Dữ liệu đã được gửi đến Google Sheets)`);
-    setIsProcessing(false);
-    setSelectedRecord(null);
+    try {
+      console.log('Sending to Google App Script:', payload);
+      
+      // Simulated API Call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Here you would normally call your Google App Script POST endpoint
+      // const res = await fetch('YOUR_GAS_URL', { method: 'POST', body: JSON.stringify(payload) });
+      
+      alert(`Đã cập nhật hồ sơ ${selectedRecord.id} thành công! Hệ thống sẽ tự động đồng bộ lại dữ liệu.`);
+      await refreshRecords();
+    } catch (err) {
+      alert('Lỗi cập nhật hồ sơ. Vui lòng thử lại.');
+    } finally {
+      setIsUpdating(false);
+      setSelectedRecord(null);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -296,13 +307,13 @@ export default function RecordsList() {
                             </button>
                             <button 
                                 onClick={handleProcess}
-                                disabled={isProcessing}
+                                disabled={isUpdating}
                                 className={cn(
                                     "flex-[2] brand-gradient text-white font-bold py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-70",
-                                    isProcessing && "animate-pulse"
+                                    isUpdating && "animate-pulse"
                                 )}
                             >
-                                {isProcessing ? (
+                                {isUpdating ? (
                                     <>Đang đồng bộ Sheets...</>
                                 ) : (
                                     <>
@@ -319,6 +330,13 @@ export default function RecordsList() {
           </div>
         )}
       </AnimatePresence>
+
+      {isLoading && (
+        <div className="fixed bottom-8 right-8 bg-white shadow-2xl p-4 rounded-2xl border flex items-center gap-3 animate-bounce">
+            <div className="w-2 h-2 rounded-full bg-brand-primary animate-ping" />
+            <span className="text-xs font-bold text-slate-600">Đang tải dữ liệu từ Google Sheets...</span>
+        </div>
+      )}
     </div>
   );
 }
