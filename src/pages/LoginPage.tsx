@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -17,11 +18,11 @@ export default function LoginPage() {
     setIsLoading(true);
     
     try {
-      const success = await login(username);
+      const success = await login(username, password);
       if (success) {
         navigate('/');
       } else {
-        setError('Tên đăng nhập không chính xác (Thử: admin, canbo, dan)');
+        setError('Tên đăng nhập hoặc mật khẩu không chính xác');
       }
     } catch (err) {
       setError('Đã xảy ra lỗi khi đăng nhập');
@@ -80,9 +81,11 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
-                  disabled
-                  value="123456"
-                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all outline-none opacity-50 cursor-not-allowed"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all outline-none"
+                  placeholder="••••••••"
+                  required
                 />
               </div>
             </div>
@@ -104,11 +107,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-3 gap-2">
+          <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-3 gap-2 hidden">
              {['admin', 'canbo', 'dan'].map(u => (
                 <button 
                     key={u}
-                    onClick={() => setUsername(u)}
+                    onClick={() => {
+                      setUsername(u);
+                      setPassword('123');
+                    }}
                     className="text-[10px] uppercase font-bold py-1 px-2 border rounded-full hover:bg-slate-50 text-slate-400 hover:text-brand-primary transition-colors"
                 >
                     {u}

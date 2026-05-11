@@ -2,9 +2,9 @@ import { User, SocialRecord } from '../types';
 import { formatAddress } from '../lib/utils';
 
 export const MOCK_USERS: User[] = [
-  { id: '1', username: 'admin', fullName: 'Quản trị viên Hệ thống', role: 'ADMIN' },
-  { id: '2', username: 'canbo', fullName: 'Nguyễn Văn A', role: 'OFFICER' },
-  { id: '3', username: 'dan', fullName: 'Trần Văn Dân', role: 'CITIZEN' },
+  { id: '1', username: 'admin', fullName: 'Quản trị viên Hệ thống', role: 'ADMIN', password: '123' },
+  { id: '2', username: 'canbo', fullName: 'Nguyễn Văn A', role: 'OFFICER', password: '123' },
+  { id: '3', username: 'dan', fullName: 'Trần Văn Dân', role: 'CITIZEN', password: '123' },
 ];
 
 export const MOCK_RECORDS_RAW = [

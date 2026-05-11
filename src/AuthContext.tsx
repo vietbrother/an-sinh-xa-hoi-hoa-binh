@@ -4,7 +4,7 @@ import { MOCK_USERS } from './data/mockData';
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string) => Promise<boolean>;
+  login: (username: string, password?: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -21,8 +21,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (username: string) => {
-    const foundUser = MOCK_USERS.find(u => u.username === username);
+  const login = async (username: string, password?: string) => {
+    const foundUser = MOCK_USERS.find(u => u.username === username && u.password === password);
     if (foundUser) {
       setUser(foundUser);
       localStorage.setItem('user', JSON.stringify(foundUser));

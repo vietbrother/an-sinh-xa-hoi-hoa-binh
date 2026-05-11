@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { format } from 'date-fns';
 
+const YOUR_GAS_URL = 'https://script.google.com/macros/s/AKfycbwfgh49fKlrKTtziHMr9BvH4iLG-eU-ejLEELc88bSDCfR8SvSA56g4sw-0m4-pX6w/exec?token=AnSinhXaHoi@2026';
 export default function RecordsList() {
   const { user } = useAuth();
   const { records, isLoading, refreshRecords } = useRecords();
@@ -58,10 +59,10 @@ export default function RecordsList() {
       console.log('Sending to Google App Script:', payload);
       
       // Simulated API Call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      //await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Here you would normally call your Google App Script POST endpoint
-      // const res = await fetch('YOUR_GAS_URL', { method: 'POST', body: JSON.stringify(payload) });
+      const res = await fetch(YOUR_GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
       
       alert(`Đã cập nhật hồ sơ ${selectedRecord.id} thành công! Hệ thống sẽ tự động đồng bộ lại dữ liệu.`);
       await refreshRecords();
