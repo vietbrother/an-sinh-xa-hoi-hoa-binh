@@ -1,0 +1,8 @@
+{
+  "name": "SocialCare Connect - Hệ thống An sinh Xã hội Số",
+  "description": "Hệ thống quản lý an sinh xã hội tích hợp báo cáo, GIS và quy trình xử lý hồ sơ thông minh.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}
