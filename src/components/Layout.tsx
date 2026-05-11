@@ -76,7 +76,7 @@ export default function Layout() {
       <header className="md:hidden brand-gradient text-white p-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
         <div className="flex items-center space-x-3">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Bi%E1%BB%83u_tr%C6%B0ng_M%E1%BA%B7t_tr%E1%BA%ADn_T%E1%BB%95_qu%E1%BB%91c_Vi%E1%BB%87t_Nam.svg/500px-Bi%E1%BB%83u_tr%C6%B0ng_M%E1%BA%B7t_tr%E1%BA%ADn_T%E1%BB%95_qu%E1%BB%91c_Vi%E1%BB%87t_Nam.svg.png" alt="Logo" className="w-8 h-8 object-contain" />
-          <span className="font-bold">SocialCare</span>
+          <span className="font-bold">An sinh Xã hội Số</span>
         </div>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
