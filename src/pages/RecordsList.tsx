@@ -179,7 +179,7 @@ export default function RecordsList() {
                             <tr key={record.id} className="hover:bg-slate-50/80 transition-colors group">
                                 <td className="px-6 py-4 text-xs font-black text-slate-400 group-hover:text-brand-primary transition-colors">{record.id}</td>
                                 <td className="px-6 py-4">
-                                    <p className="text-sm font-bold text-slate-900 leading-none mb-1">{record.fullName}</p>
+                                    <p className="text-sm font-bold text-slate-900 leading-none mb-1">{record.headOfHousehold || record.category}</p>
                                     <p className="text-[11px] text-slate-500">{record.phone}</p>
                                 </td>
                                 <td className="px-6 py-4">
