@@ -6,10 +6,11 @@ import {
 } from 'recharts';
 import { 
   Users, Clock, MapPin, 
-  TrendingUp, Activity, ShieldCheck 
+  TrendingUp, Activity, ShieldCheck, Timer
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
+import { parse, differenceInMinutes } from 'date-fns';
 
 export default function Dashboard() {
   const { records, isLoading } = useRecords();
@@ -17,8 +18,45 @@ export default function Dashboard() {
   const stats = useMemo(() => {
     const total = records.length;
     const processing = records.filter(r => r.resolutionStatus === 'Đang xử lý').length;
-    const completed = records.filter(r => r.resolutionStatus === 'Hoàn thành').length;
+    const completedRecords = records.filter(r => r.resolutionStatus === 'Hoàn thành');
+    const completed = completedRecords.length;
     
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    // Calculate Average Completion Time
+    let totalMinutes = 0;
+    let validCompletedCount = 0;
+
+    completedRecords.forEach(r => {
+      if (r.timestamp && r.completionTime) {
+        try {
+          // Standard Google Sheets format: DD/MM/YYYY HH:mm:ss
+          const start = parse(r.timestamp, 'dd/MM/yyyy HH:mm:ss', new Date());
+          
+          // Completion time might be YYYY-MM-DD or DD/MM/YYYY
+          let end;
+          if (r.completionTime.includes('-')) {
+            end = parse(r.completionTime, 'yyyy-MM-dd HH:mm:ss', new Date());
+          } else {
+            end = parse(r.completionTime, 'dd/MM/yyyy HH:mm:ss', new Date());
+          }
+
+          if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+            const diff = differenceInMinutes(end, start);
+            if (diff > 0) {
+              totalMinutes += diff;
+              validCompletedCount++;
+            }
+          }
+        } catch (e) {
+          console.warn("Date parsing error for record", r.id, e);
+        }
+      }
+    });
+
+    const avgMinutes = validCompletedCount > 0 ? totalMinutes / validCompletedCount : 0;
+    const avgHours = (avgMinutes / 60).toFixed(1);
+
     // Stats by Phuong
     const phuongStats = records.reduce((acc, current) => {
       const phuong = current.phuong || 'Khác';
@@ -37,7 +75,7 @@ export default function Dashboard() {
 
     const categoryData = Object.entries(categoryStats).map(([name, value]) => ({ name, value }));
 
-    return { total, processing, completed, phuongData, categoryData };
+    return { total, processing, completed, phuongData, categoryData, completionRate, avgHours };
   }, [records]);
 
   const COLORS = ['#ff3000', '#77011f', '#fced31', '#0ea5e9', '#10b981'];
@@ -59,9 +97,9 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: 'Tổng hồ sơ', value: stats.total, icon: Users, color: 'text-brand-accent', borderColor: 'border-brand-accent' },
-          { label: 'Đang xử lý', value: stats.processing, icon: Activity, color: 'text-brand-secondary', borderColor: 'border-brand-secondary' },
-          { label: 'Hoàn thành', value: stats.completed, icon: ShieldCheck, color: 'text-emerald-600', borderColor: 'border-emerald-500' },
-          { label: 'Ngân sách hỗ trợ', value: '2.4B', icon: TrendingUp, color: 'text-brand-primary', borderColor: 'border-brand-primary' },
+          { label: 'Tỷ lệ hoàn thành', value: `${stats.completionRate}%`, icon: ShieldCheck, color: 'text-emerald-600', borderColor: 'border-emerald-500' },
+          { label: 'Thời gian xử lý TB', value: `${stats.avgHours}h`, icon: Timer, color: 'text-blue-600', borderColor: 'border-blue-500' },
+          { label: 'Đang chờ xử lý', value: stats.processing, icon: Clock, color: 'text-brand-primary', borderColor: 'border-brand-primary' },
         ].map((item, i) => (
           <motion.div
             key={item.label}
