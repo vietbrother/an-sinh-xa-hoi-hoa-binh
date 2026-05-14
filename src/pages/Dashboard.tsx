@@ -85,6 +85,11 @@ export default function Dashboard() {
 
   const COLORS = ['#ff3000', '#77011f', '#fced31', '#0ea5e9', '#10b981'];
   const COMPLETION_COLORS = ['#10b981', '#f1f5f9'];
+  const currentDate = new Date().toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -95,7 +100,7 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center space-x-2 bg-brand-light px-4 py-2 rounded-2xl border border-brand-primary/10">
           <Clock size={18} className="text-brand-primary" />
-          <span className="text-sm font-semibold text-brand-accent">Cập nhật: 11/05/2026</span>
+          <span className="text-sm font-semibold text-brand-accent">Cập nhật: {currentDate}</span>
         </div>
       </div>
 
