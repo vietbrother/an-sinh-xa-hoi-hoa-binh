@@ -30,7 +30,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
   userRole
 }) => {
   if (!selectedRecord) return null;
-
+  console.log(selectedRecord);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -259,9 +259,9 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lịch sử hỗ trợ (Ghi chú mới)</label>
                           <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-2">
                             <p className="text-[10px] font-bold text-amber-600 uppercase mb-1">Lịch sử cũ (Chỉ xem):</p>
-                            <p className="text-xs text-slate-600 italic">{selectedRecord.supportHistory || "Không có lịch sử cũ"}</p>
+                            <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistory || "Không có lịch sử cũ"}</div>
                           </div>
-                          <textarea rows={3} value={processingData.supportHistory} onChange={e => setProcessingData({...processingData, supportHistory: e.target.value})} placeholder="Cập nhật diễn biến hỗ trợ mới nhất..." className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                          <textarea rows={3} value={processingData.supportHistoryNew || ''} onChange={e => setProcessingData({...processingData, supportHistoryNew: e.target.value})} placeholder="Cập nhật diễn biến hỗ trợ mới nhất..." className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                     </div>
                   </section>

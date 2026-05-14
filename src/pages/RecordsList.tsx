@@ -86,7 +86,7 @@ export default function RecordsList() {
       hinhThucHoTro: processingData.supportType,
       cot15: processingData.col15,
       cot16: processingData.col16,
-      lichSuHoTro: processingData.supportHistory,
+      lichSuHoTro: processingData.supportHistoryNew,
       nhuCau: processingData.supportNeed,
       doiTuongHoTro: processingData.objectOrTypeNeed,
       doiTuong: processingData.category,
@@ -98,6 +98,7 @@ export default function RecordsList() {
 
     try {
       console.log('Sending to Google App Script:', payload);
+      console.log('Sending to Google App Script:', JSON.stringify(payload));
       
       // Simulated API Call
       //await new Promise(resolve => setTimeout(resolve, 1500));
