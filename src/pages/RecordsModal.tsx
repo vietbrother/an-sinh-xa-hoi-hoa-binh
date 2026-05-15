@@ -56,7 +56,14 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                       <MoreVertical size={20} />
                   </button>
               </div>
-              <h3 className="text-3xl font-black mb-2">{selectedRecord.fullName}</h3>
+              
+              <h3 className="flex flex-wrap items-center gap-3 text-3xl font-black mb-2">
+                <span>{selectedRecord.fullName}</span>
+
+                <span className="inline-flex items-center h-8 px-3 rounded-full bg-brand-secondary/20 text-brand-secondary text-sm font-semibold border border-brand-secondary/30">
+                  {processingData.category}
+                </span>
+              </h3>
               <div className="flex items-center gap-4 text-sm font-medium text-white/80">
                   <span className="flex items-center gap-1.5"><MapPin size={16} className="text-brand-secondary" /> {selectedRecord.oldAddress}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/40" />

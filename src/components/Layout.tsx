@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, FolderOpen, FileText, Palette } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -39,8 +39,8 @@ export default function Layout() {
                 to={item.path}
                 className={cn(
                   "flex items-center space-x-3 px-6 py-3 transition-all duration-200 border-l-4",
-                  isActive 
-                    ? "bg-white/10 border-brand-secondary text-white opacity-100" 
+                  isActive
+                    ? "bg-white/10 border-brand-secondary text-white opacity-100"
                     : "border-transparent text-white/70 hover:bg-white/5 hover:opacity-100"
                 )}
               >
@@ -49,6 +49,51 @@ export default function Layout() {
               </Link>
             );
           })}
+
+          {/* Google Drive Links */}
+          <div className="mt-2 px-4">
+            <div className="space-y-1">
+              <a
+                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+              >
+                <FileText size={18} />
+                <span className="text-sm">Ds hộ nghèo</span>
+              </a>
+
+              <a
+                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+              >
+                <Palette size={18} />
+                <span className="text-sm">Ds hộ cận nghèo</span>
+              </a>
+
+              <a
+                href="https://drive.google.com/drive/folders/143m8c_CwY1HmjzhZ8XO6WZudTajZ8Wkn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+              >
+                <Palette size={18} />
+                <span className="text-sm">Ds hộ gđ chính sách</span>
+              </a>
+
+              <a
+                href="https://drive.google.com/drive/folders/143m8c_CwY1HmjzhZ8XO6WZudTajZ8Wkn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+              >
+                <Palette size={18} />
+                <span className="text-sm">Ds bảo trợ XH</span>
+              </a>
+            </div>
+          </div>
         </nav>
 
         <div className="p-4 border-t border-white/10 bg-black/10">
