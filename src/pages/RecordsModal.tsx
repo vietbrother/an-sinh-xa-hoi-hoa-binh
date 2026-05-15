@@ -168,6 +168,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                         >
                           <option value="Hộ nghèo">Hộ nghèo</option>
                           <option value="Hộ cận nghèo">Hộ cận nghèo</option>
+                          <option value="Hộ khó khăn">Hộ khó khăn</option>
                           <option value="Hộ gia đình chính sách">Hộ gia đình chính sách</option>
                           <option value="Đối tượng bảo trợ">Đối tượng bảo trợ</option>
                           <option value="Khác">Khác</option>
