@@ -105,6 +105,10 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                             <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1.5 block">Hộ khẩu thường trú</label>
                             <p className="text-sm text-slate-700 font-medium">{selectedRecord.residentAddress || "N/A"}</p>
                         </section>
+                        <section>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lịch sử hỗ trợ</label>
+                          <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistory || "Không có lịch sử hỗ trợ"}</div>
+                        </section>
                     </div>
                 </div>
               ) : (
@@ -182,7 +186,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                           <option value="Nhà hảo tâm">Nhà hảo tâm</option>
                         </select>
                       </div>
-                      <div>
+                      <div className={userRole == "OFFICER" ? "hidden" : ""}>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Phân loại (Đối tượng cần hỗ trợ hay Nhà hảo tâm)</label>
                         <input type="text" value={processingData.col4} onChange={e => setProcessingData({...processingData, col4: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" placeholder="Nhập Đối tượng cần hỗ trợ hay Nhà hảo tâm" />
                       </div>
@@ -190,13 +194,13 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hoàn cảnh gia đình</label>
                         <textarea rows={2} value={processingData.familyCircumstance} onChange={e => setProcessingData({...processingData, familyCircumstance: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
-                      <div>
+                      <div className={userRole == "OFFICER" ? "hidden" : ""}>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tình trạng hộ (tình trạng)</label>
                         <input type="text" value={processingData.addressStatus} onChange={e => setProcessingData({...processingData, addressStatus: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Địa chỉ nhà hảo tâm</label>
-                        <input type="text" value={processingData.donorAddress} onChange={e => setProcessingData({...processingData, donorAddress: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                      <div className="md:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhu cầu hỗ trợ</label>
+                        <input type="text" value={processingData.supportNeed} onChange={e => setProcessingData({...processingData, supportNeed: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                     </div>
                   </section>
@@ -207,14 +211,6 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                       Nhu cầu & Hình thức hỗ trợ
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="md:col-span-2">
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nhu cầu hỗ trợ</label>
-                        <input type="text" value={processingData.supportNeed} onChange={e => setProcessingData({...processingData, supportNeed: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hình thức hỗ trợ</label>
-                        <input type="text" value={processingData.supportType} onChange={e => setProcessingData({...processingData, supportType: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
-                      </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Đối tượng hoặc hình thức hỗ trợ</label>
                         <input type="text" value={processingData.objectOrTypeNeed} onChange={e => setProcessingData({...processingData, objectOrTypeNeed: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
@@ -258,6 +254,14 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                       <div className="md:col-span-2">
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Cá nhân hoặc Đơn vị phối hợp</label>
                         <input type="text" value={processingData.coordinatingUnit} onChange={e => setProcessingData({...processingData, coordinatingUnit: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                      </div>                        
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hình thức hỗ trợ</label>
+                        <input type="text" value={processingData.supportType} onChange={e => setProcessingData({...processingData, supportType: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Địa chỉ nhà hảo tâm</label>
+                        <input type="text" value={processingData.donorAddress} onChange={e => setProcessingData({...processingData, donorAddress: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kết quả</label>
