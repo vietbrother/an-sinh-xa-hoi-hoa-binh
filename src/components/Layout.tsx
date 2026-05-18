@@ -54,7 +54,7 @@ export default function Layout() {
           <div className="mt-2 px-4">
             <div className="space-y-1">
               <a
-                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
+                href="https://drive.google.com/file/d/1t7ZrZOFftnVMVxtHAK3DljEWoUNfYfCb/view"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
@@ -64,7 +64,7 @@ export default function Layout() {
               </a>
 
               <a
-                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
+                href="https://drive.google.com/file/d/1t7ZrZOFftnVMVxtHAK3DljEWoUNfYfCb/view"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
