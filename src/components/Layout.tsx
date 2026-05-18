@@ -69,27 +69,27 @@ export default function Layout() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <Palette size={18} />
+                <FileText size={18} />
                 <span className="text-sm">Ds hộ cận nghèo</span>
               </a>
 
               <a
-                href="https://drive.google.com/drive/folders/143m8c_CwY1HmjzhZ8XO6WZudTajZ8Wkn"
+                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <Palette size={18} />
+                <FileText size={18} />
                 <span className="text-sm">Ds hộ gđ chính sách</span>
               </a>
 
               <a
-                href="https://drive.google.com/drive/folders/143m8c_CwY1HmjzhZ8XO6WZudTajZ8Wkn"
+                href="https://drive.google.com/drive/folders/1km49MdnRfnGUTIZsQRSfvvR5unUpXMBy?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <Palette size={18} />
+                <FileText size={18} />
                 <span className="text-sm">Ds bảo trợ XH</span>
               </a>
             </div>

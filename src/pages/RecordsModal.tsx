@@ -205,7 +205,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                     </div>
                   </section>
 
-                  <section className="space-y-4">
+                  <section className={userRole == "OFFICER" ? "hidden" : "space-y-4"}>
                     <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
                       <TrendingUp size={16} className="text-brand-primary" />
                       Nhu cầu & Hình thức hỗ trợ
