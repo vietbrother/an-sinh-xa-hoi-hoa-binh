@@ -6,7 +6,8 @@ import {
 } from 'recharts';
 import {
   Users, Clock, MapPin,
-  TrendingUp, Activity, ShieldCheck, Timer
+  TrendingUp, Activity, ShieldCheck, Timer,
+  Heart, Handshake, ClipboardList, FileText, PhoneCall
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -75,12 +76,76 @@ export default function Dashboard() {
 
     const categoryData = Object.entries(categoryStats).map(([name, value]) => ({ name, value }));
 
+    // Stats by updatedSupportStatus (Tình trạng hỗ trợ mới)
+    const updatedStatusStats = records.reduce((acc, current) => {
+      const status = current.updatedSupportStatus || 'Chưa cập nhật';
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const updatedStatusData = Object.entries(updatedStatusStats)
+      .filter(([name]) => name.trim() !== '')
+      .map(([name, value]) => ({ name, value }));
+
+    // Stats by supportType (Hình thức hỗ trợ)
+    const supportTypeStats = records.reduce((acc, current) => {
+      const type = current.supportType || 'Chưa phân loại';
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const supportTypeData = Object.entries(supportTypeStats)
+      .filter(([name]) => name.trim() !== '')
+      .map(([name, value]) => ({ name, value }));
+
+    // Stats by Coordinating Unit
+    const coordinatingStats = records.reduce((acc, current) => {
+      const unit = current.coordinatingUnit || 'Hệ thống trực tiếp';
+      acc[unit] = (acc[unit] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const coordinatingData = Object.entries(coordinatingStats)
+      .filter(([name]) => name.trim() !== '')
+      .map(([name, value]) => ({ name, value }));
+
+    // Count of records with phone contact
+    const hasContactPhoneCount = records.filter(r => r.contactPhone && r.contactPhone.trim() !== '').length;
+
+    // Recent support notifications / activity from newly added columns
+    const recentActivities = [...records]
+      .filter(r => r.supportHistoryNew || r.result || r.processingOfficer)
+      .slice(0, 5)
+      .map(r => ({
+        id: r.id,
+        fullName: r.fullName,
+        officer: r.processingOfficer || 'Cán bộ',
+        history: r.supportHistoryNew || r.result || 'Cập nhật thông tin hỗ trợ',
+        status: r.updatedSupportStatus || 'Đã tiếp nhận',
+        unit: r.coordinatingUnit || 'Trực tiếp',
+        time: r.completionTime || 'Mới cập nhật'
+      }));
+
     const completionPieData = [
       { name: 'Hoàn thành', value: completed },
       { name: 'Chưa hoàn thành', value: total - completed }
     ];
 
-    return { total, processing, completed, phuongData, categoryData, completionRate, avgHours, completionPieData };
+    return { 
+      total, 
+      processing, 
+      completed, 
+      phuongData, 
+      categoryData, 
+      completionRate, 
+      avgHours, 
+      completionPieData,
+      updatedStatusData,
+      supportTypeData,
+      coordinatingData,
+      hasContactPhoneCount,
+      recentActivities
+    };
   }, [records]);
 
   const COLORS = ['#ff3000', '#77011f', '#fced31', '#0ea5e9', '#10b981'];
@@ -332,6 +397,119 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced metrics section from updated columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Support Statuses */}
+        <div className="glass-card p-6 flex flex-col space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
+              <ClipboardList size={16} className="text-brand-primary" />
+              Cập nhật Tình trạng Hỗ trợ
+            </h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+              Mới
+            </span>
+          </div>
+          <div className="flex-1 flex flex-col justify-between space-y-4">
+            {stats.updatedStatusData.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center italic my-auto">Chưa có thông tin cập nhật hỗ trợ mới</p>
+            ) : (
+              <div className="space-y-3">
+                {stats.updatedStatusData.map((item, index) => {
+                  const percentage = stats.total > 0 ? Math.round((item.value / stats.total) * 100) : 0;
+                  return (
+                    <div key={item.name} className="space-y-1">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                        <span className="truncate max-w-[150px]">{item.name}</span>
+                        <span>{item.value} ({percentage}%)</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div 
+                          className="h-2 rounded-full" 
+                          style={{ 
+                            width: `${percentage}%`,
+                            backgroundColor: COLORS[index % COLORS.length]
+                          }} 
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <PhoneCall size={16} className="text-brand-accent animate-bounce" />
+                <span className="text-xs font-bold text-slate-600">Đã cập nhật SĐT liên hệ</span>
+              </div>
+              <span className="text-sm font-black text-slate-800">
+                {stats.hasContactPhoneCount} / {stats.total}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Coordinating Units and Support Formats */}
+        <div className="glass-card p-6 flex flex-col space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
+              <Handshake size={16} className="text-teal-600" />
+              Sự tham gia của Đơn vị phối hợp
+            </h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+              Liên kết
+            </span>
+          </div>
+          <div className="flex-1 overflow-y-auto max-h-[220px] space-y-2 pr-1">
+            {stats.coordinatingData.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center italic my-auto">Chưa ghi nhận đơn vị phối hợp</p>
+            ) : (
+              stats.coordinatingData.map((item, index) => (
+                <div key={item.name} className="flex items-center justify-between text-xs font-bold p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                  <span className="text-slate-700 truncate max-w-[180px]">{item.name}</span>
+                  <span className="px-2.5 py-1 bg-teal-50 text-teal-700 rounded-full border border-teal-100 text-[10px]">
+                    {item.value} lượt
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Live Support Log News */}
+        <div className="glass-card p-6 flex flex-col space-y-6 md:col-span-2 lg:col-span-1">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
+              <Heart size={16} className="text-rose-600 animate-pulse" />
+              Nhật ký hỗ trợ mới cập nhật
+            </h3>
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+          </div>
+          <div className="flex-1 overflow-y-auto max-h-[220px] space-y-3 pr-1">
+            {stats.recentActivities.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center italic my-auto">Chưa có hoạt động cập nhật</p>
+            ) : (
+              stats.recentActivities.map((act) => (
+                <div key={act.id + act.fullName} className="text-xs border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-extrabold text-slate-800">{act.fullName}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[9px] font-black text-slate-500 truncate max-w-[100px]">
+                      {act.status}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 italic line-clamp-2 mb-1">"{act.history}"</p>
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                    <span>CB: {act.officer}</span>
+                    <span>{act.time}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

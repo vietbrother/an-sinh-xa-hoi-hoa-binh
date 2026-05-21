@@ -53,7 +53,7 @@ export default function RecordsList() {
     // New fields
     contactPhone: '',
     updatedSupportStatus: '',
-    supportHistoryNew: ''
+    supportHistoryNew: '',
     supportHistoryLast: ''
   });
 
