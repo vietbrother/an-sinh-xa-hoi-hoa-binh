@@ -7,19 +7,26 @@ interface AuthContextType {
   login: (username: string, password?: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Sync check just in case, though initializer handles most cases
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    if (savedUser && !user) {
       setUser(JSON.parse(savedUser));
     }
-  }, []);
+    setLoading(false);
+  }, [user]);
 
   const login = async (username: string, password?: string) => {
     const foundUser = MOCK_USERS.find(u => u.username === username && u.password === password);
@@ -37,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, loading }}>
       {children}
     </AuthContext.Provider>
   );

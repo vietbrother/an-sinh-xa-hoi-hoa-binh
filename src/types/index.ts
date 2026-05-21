@@ -38,6 +38,11 @@ export interface SocialRecord {
   result: string; // Kết quả
   completionTime?: string;
   
+  // New Fields from updated Google Sheet
+  contactPhone?: string;
+  updatedSupportStatus?: string;
+  supportHistoryNew?: string;
+  
   // Computed fields for GIS/Stats
   to?: string;
   phuong?: string;
