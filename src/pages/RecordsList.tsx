@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { format } from 'date-fns';
 
-const YOUR_GAS_URL = 'https://script.google.com/macros/s/AKfycby5zgo9vJvWFoKRJSP-OtJRCIWCe83_7qxWyxeb6t-uAuTSh5eeRsJD4FhZ423clHde/exec?token=AnSinhXaHoi@2026';
+const YOUR_GAS_URL = 'https://script.google.com/macros/s/AKfycbye05mqpv2R7NH4cGTFev00zuVLCMqBJTA3TNh3wPY1aEoAu0otJNcA2VMPgVz6tw/exec?token=AnSinhXaHoi@2026';
 import { RecordsModal } from './RecordsModal';
 
 export default function RecordsList() {
@@ -48,7 +48,13 @@ export default function RecordsList() {
     processingOfficer: '',
     coordinatingUnit: '',
     resolutionStatus: '',
-    result: ''
+    result: '',
+    
+    // New fields
+    contactPhone: '',
+    updatedSupportStatus: '',
+    supportHistoryNew: ''
+    supportHistoryLast: ''
   });
 
   const filteredRecords = useMemo(() => {
@@ -73,25 +79,23 @@ export default function RecordsList() {
       id: selectedRecord.id,
       hoTen: processingData.fullName,
       soDienThoai: processingData.phone,
-      diaChiCu: processingData.oldAddress,
-      cot4: processingData.col4,
       chuHo: processingData.headOfHousehold,
-      tinhTrangHo: processingData.addressStatus,
-      diaChiNhaHaoTam: processingData.donorAddress,
       ngaySinh: processingData.birthDate,
       cccd: processingData.cccd,
+      ngayCap: processingData.issuedDate,
+      soDienThoaiLienHe: processingData.contactPhone,
+      laDoiTuong: processingData.category,
+      tinhTrangHoTro: processingData.addressStatus,
+      diaChiCu: processingData.oldAddress,
       hoKhau: processingData.residentAddress,
       hoanCanh: processingData.familyCircumstance,
-      ngayCap: processingData.issuedDate,
-      hinhThucHoTro: processingData.supportType,
-      cot15: processingData.col15,
-      cot16: processingData.col16,
-      lichSuHoTro: processingData.supportHistoryNew,
       nhuCau: processingData.supportNeed,
-      doiTuongHoTro: processingData.objectOrTypeNeed,
-      doiTuong: processingData.category,
+      lichSuCu: processingData.supportHistory,
+      hinhThucHoTro: processingData.supportType,
+      lichSuHoTro: processingData.supportHistoryLast,
       canBo: processingData.processingOfficer,
       phoiHop: processingData.coordinatingUnit,
+      capNhatTinhTrangHoTro: processingData.updatedSupportStatus,
       tinhTrang: processingData.resolutionStatus,
       ketQua: processingData.result
     };
@@ -228,7 +232,11 @@ export default function RecordsList() {
                                                 processingOfficer: record.processingOfficer || user?.fullName || '',
                                                 coordinatingUnit: record.coordinatingUnit || '',
                                                 resolutionStatus: record.resolutionStatus || '',
-                                                result: record.result || ''
+                                                result: record.result || '',
+                                                contactPhone: record.contactPhone || '',
+                                                updatedSupportStatus: record.updatedSupportStatus || '',
+                                                supportHistoryNew: record.supportHistoryNew || '',
+                                                supportHistoryLast: ''
                                             });
                                         }}
                                         className="bg-brand-accent text-white px-3 py-1.5 rounded text-[11px] font-bold uppercase tracking-tight hover:brightness-110 active:scale-95 transition-all"
@@ -304,7 +312,11 @@ export default function RecordsList() {
                                 processingOfficer: record.processingOfficer || user?.fullName || '',
                                 coordinatingUnit: record.coordinatingUnit || '',
                                 resolutionStatus: record.resolutionStatus || '',
-                                result: record.result || ''
+                                result: record.result || '',
+                                contactPhone: record.contactPhone || '',
+                                updatedSupportStatus: record.updatedSupportStatus || '',
+                                supportHistoryNew: record.supportHistoryNew || '',
+                                supportHistoryLast: ''
                             });
                         }}
                         className="w-full bg-brand-primary text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-brand-primary/20 active:scale-[0.98] transition-all"

@@ -121,12 +121,16 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Họ và tên</label>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Họ và tên chủ hộ</label>
                         <input type="text" value={processingData.fullName} onChange={e => setProcessingData({...processingData, fullName: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Số điện thoại</label>
                         <input type="text" value={processingData.phone} onChange={e => setProcessingData({...processingData, phone: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Số điện thoại liên hệ</label>
+                        <input type="text" value={processingData.contactPhone || ''} onChange={e => setProcessingData({...processingData, contactPhone: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ngày sinh</label>
@@ -195,7 +199,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                         <textarea rows={2} value={processingData.familyCircumstance} onChange={e => setProcessingData({...processingData, familyCircumstance: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div className={userRole == "OFFICER" ? "hidden" : ""}>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tình trạng hộ (tình trạng)</label>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tình trạng hỗ trợ</label>
                         <input type="text" value={processingData.addressStatus} onChange={e => setProcessingData({...processingData, addressStatus: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div className="md:col-span-2">
@@ -248,6 +252,10 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                         </select>
                       </div>
                       <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Cập nhật tình trạng hỗ trợ</label>
+                        <input type="text" value={processingData.updatedSupportStatus || ''} onChange={e => setProcessingData({...processingData, updatedSupportStatus: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" placeholder="Nhập tình trạng hỗ trợ..." />
+                      </div>
+                      <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Cán bộ thực hiện</label>
                         <input type="text" value={processingData.processingOfficer} onChange={e => setProcessingData({...processingData, processingOfficer: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
@@ -270,10 +278,14 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                        <div className="md:col-span-2">
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lịch sử hỗ trợ (Ghi chú mới)</label>
                           <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-2">
-                            <p className="text-[10px] font-bold text-amber-600 uppercase mb-1">Lịch sử cũ (Chỉ xem):</p>
+                            <p className="text-[10px] font-bold text-amber-600 uppercase mb-1">Lịch sử trước đây:</p>
                             <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistory || "Không có lịch sử cũ"}</div>
                           </div>
-                          <textarea rows={3} value={processingData.supportHistoryNew || ''} onChange={e => setProcessingData({...processingData, supportHistoryNew: e.target.value})} placeholder="Cập nhật diễn biến hỗ trợ mới nhất..." className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                          <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-2">
+                            <p className="text-[10px] font-bold text-amber-600 uppercase mb-1">Lịch sử hỗ trợ mới thực hiện:</p>
+                            <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistoryNew || "Không có lịch sử cũ"}</div>
+                          </div>
+                          <textarea rows={3} value={processingData.supportHistoryLast || ''} onChange={e => setProcessingData({...processingData, supportHistoryLast: e.target.value})} placeholder="Cập nhật diễn biến hỗ trợ mới nhất..." className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                     </div>
                   </section>
