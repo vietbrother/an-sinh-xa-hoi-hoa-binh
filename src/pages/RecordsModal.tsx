@@ -109,6 +109,72 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lịch sử hỗ trợ</label>
                           <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistory || "Không có lịch sử hỗ trợ"}</div>
                         </section>
+                        <section>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-3">
+                                Lịch sử hỗ trợ mới thực hiện
+                              </label>
+
+                              {selectedRecord.supportHistoryNew ? (
+                                <div className="space-y-4">
+                                  {selectedRecord.supportHistoryNew
+                                    .split(/\n(?=\[)/)
+                                    .filter(Boolean)
+                                    .map((item, index) => {
+                                      const match = item.match(/\[(.*?)\]\s*(.*)/);
+
+                                      if (!match) {
+                                        return (
+                                          <div
+                                            key={index}
+                                            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"
+                                          >
+                                            {item}
+                                          </div>
+                                        );
+                                      }
+
+                                      const [, date, content] = match;
+
+                                      return (
+                                        <div
+                                          key={index}
+                                          className="relative flex gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition"
+                                        >
+                                          {/* Timeline */}
+                                          <div className="flex flex-col items-center">
+                                            <div className="h-3 w-3 rounded-full bg-blue-500 ring-4 ring-blue-100"></div>
+
+                                            {index !==
+                                              selectedRecord.supportHistoryNew
+                                                .split(/\n(?=\[)/)
+                                                .filter(Boolean).length -
+                                                1 && (
+                                              <div className="mt-1 w-[2px] flex-1 bg-slate-200"></div>
+                                            )}
+                                          </div>
+
+                                          {/* Content */}
+                                          <div className="flex-1">
+                                            <div className="mb-1 flex items-center gap-2">
+                                              <span className="rounded-md bg-blue-50 px-2 py-1 text-[11px] font-medium text-blue-700">
+                                                {date}
+                                              </span>
+                                            </div>
+
+                                            <div className="text-sm leading-relaxed text-slate-700">
+                                              {content}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+                              ) : (
+                                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm italic text-slate-500">
+                                  Không có lịch sử hỗ trợ mới thực hiện
+                                </div>
+                              )}
+                            </section>
                     </div>
                 </div>
               ) : (
