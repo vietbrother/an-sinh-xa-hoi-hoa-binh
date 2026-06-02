@@ -188,7 +188,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Họ và tên chủ hộ</label>
-                        <input type="text" value={processingData.fullName} onChange={e => setProcessingData({...processingData, fullName: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                        <input type="text" value={processingData.headOfHousehold} onChange={e => setProcessingData({...processingData, headOfHousehold: e.target.value})} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Số điện thoại</label>

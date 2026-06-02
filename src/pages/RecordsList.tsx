@@ -264,7 +264,7 @@ export default function RecordsList() {
                     <div className="flex justify-between items-start">
                         <div>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{record.id}</span>
-                            <h4 className="text-lg font-bold text-slate-900 leading-tight">{record.fullName}</h4>
+                            <h4 className="text-lg font-bold text-slate-900 leading-tight">{record.headOfHousehold}</h4>
                             <p className="text-xs font-semibold text-brand-primary mt-0.5">{record.category}</p>
                         </div>
                         <span className={cn("badge text-[10px]", 
