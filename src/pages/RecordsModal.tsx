@@ -58,7 +58,7 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
               </div>
               
               <h3 className="flex flex-wrap items-center gap-3 text-3xl font-black mb-2">
-                <span>{selectedRecord.fullName}</span>
+                <span>{selectedRecord.headOfHousehold}</span>
 
                 <span className="inline-flex items-center h-8 px-3 rounded-full bg-brand-secondary/20 text-brand-secondary text-sm font-semibold border border-brand-secondary/30">
                   {processingData.category}
