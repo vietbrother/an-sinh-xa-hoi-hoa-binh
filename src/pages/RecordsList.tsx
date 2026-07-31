@@ -7,7 +7,7 @@ import {
   Search, Filter, ChevronRight, MapPin, 
   Phone, User as UserIcon, Calendar, CheckCircle2, 
   AlertCircle, Clock, ExternalLink, MoreVertical,
-  Plus, ArrowRight, ClipboardCheck, TrendingUp, Activity
+  Plus, ArrowRight, ClipboardCheck, TrendingUp, Activity, Tag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -21,9 +21,21 @@ export default function RecordsList() {
   const { records, isLoading, refreshRecords } = useRecords();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [selectedRecord, setSelectedRecord] = useState<SocialRecord | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
+  // Dynamically extract unique categories from records list
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    records.forEach(record => {
+      if (record.category && record.category.trim() !== '') {
+        cats.add(record.category.trim());
+      }
+    });
+    return Array.from(cats).sort((a, b) => a.localeCompare(b, 'vi'));
+  }, [records]);
+
   // Processing Form State
   const [processingData, setProcessingData] = useState({
     fullName: '',
@@ -58,17 +70,23 @@ export default function RecordsList() {
   });
 
   const filteredRecords = useMemo(() => {
+    const term = searchTerm.toLowerCase().trim();
     return records.filter(record => {
       const matchesSearch = 
-        record.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.oldAddress.toLowerCase().includes(searchTerm.toLowerCase());
+        (record.fullName && record.fullName.toLowerCase().includes(term)) ||
+        (record.id && record.id.toLowerCase().includes(term)) ||
+        (record.oldAddress && record.oldAddress.toLowerCase().includes(term)) ||
+        (record.headOfHousehold && record.headOfHousehold.toLowerCase().includes(term)) ||
+        (record.category && record.category.toLowerCase().includes(term)) ||
+        (record.phone && record.phone.toLowerCase().includes(term)) ||
+        (record.cccd && record.cccd.toLowerCase().includes(term));
       
-      const matchesFilter = filterStatus === 'all' || record.resolutionStatus === filterStatus;
+      const matchesStatus = filterStatus === 'all' || record.resolutionStatus === filterStatus;
+      const matchesCategory = filterCategory === 'all' || record.category === filterCategory;
       
-      return matchesSearch && matchesFilter;
+      return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [searchTerm, filterStatus, records]);
+  }, [searchTerm, filterStatus, filterCategory, records]);
 
   const handleProcess = async () => {
     if (!selectedRecord) return;
@@ -137,22 +155,39 @@ export default function RecordsList() {
           <h2 className="text-2xl font-bold text-slate-900">Danh sách hồ sơ</h2>
           <p className="text-slate-500 font-medium">Quản lý và theo dõi tiến độ giải quyết</p>
         </div>
-        <div className="flex items-center gap-3">
-            <div className="relative group flex-1 md:w-64">
+        <div className="flex flex-wrap items-center gap-3">
+            <div className="relative group flex-1 min-w-[200px] md:w-64">
                 <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary" />
                 <input 
                     type="text"
-                    placeholder="Tìm kiếm hồ sơ..."
+                    placeholder="Tìm kiếm hồ sơ, phân loại..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm"
+                    className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm text-sm"
                 />
             </div>
+
+            {/* Category Filter */}
+            <div className="relative">
+                <select 
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="appearance-none pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary shadow-sm font-medium text-slate-600 text-sm max-w-[220px] truncate"
+                >
+                    <option value="all">Tất cả phân loại ({categories.length})</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
+                <Tag size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+
+            {/* Status Filter */}
             <div className="relative">
                 <select 
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="appearance-none pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary shadow-sm font-medium text-slate-600"
+                    className="appearance-none pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary shadow-sm font-medium text-slate-600 text-sm"
                 >
                     <option value="all">Tất cả trạng thái</option>
                     <option value="Kiểm tra hồ sơ">Kiểm tra hồ sơ</option>
@@ -160,7 +195,7 @@ export default function RecordsList() {
                     <option value="Trả kết quả">Trả kết quả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                 </select>
-                <Filter size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Filter size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
         </div>
       </div>
@@ -187,7 +222,7 @@ export default function RecordsList() {
                                 <td className="px-6 py-4 text-xs font-black text-slate-400 group-hover:text-brand-primary transition-colors">{record.id}</td>
                                 <td className="px-6 py-4">
                                     <p className="text-sm font-bold text-slate-900 leading-none mb-1">{record.headOfHousehold || record.category}</p>
-                                    <p className="text-[11px] text-slate-500">{record.phone}</p>
+                                    <p className="text-[11px] text-slate-500">0{record.phone}</p>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="text-xs font-medium text-slate-600">{record.oldAddress}</span>
@@ -282,7 +317,7 @@ export default function RecordsList() {
                         </div>
                         <div className="flex items-center gap-2 text-slate-500">
                             <Phone size={14} className="shrink-0 text-brand-accent" />
-                            <span className="text-[11px] font-medium">{record.phone}</span>
+                            <span className="text-[11px] font-medium">0{record.phone}</span>
                         </div>
                     </div>
 
