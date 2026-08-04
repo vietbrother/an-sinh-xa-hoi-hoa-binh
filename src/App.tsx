@@ -10,6 +10,7 @@ import { RecordProvider } from './RecordContext';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import RecordsList from './pages/RecordsList';
+import UserManagement from './pages/UserManagement';
 import Layout from './components/Layout';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: string[] }> = ({ children, roles }) => {
@@ -55,6 +56,11 @@ export default function App() {
               <Route path="/records" element={
                 <ProtectedRoute>
                   <RecordsList />
+                </ProtectedRoute>
+              } />
+              <Route path="/users" element={
+                <ProtectedRoute roles={['ADMIN']}>
+                  <UserManagement />
                 </ProtectedRoute>
               } />
             </Route>

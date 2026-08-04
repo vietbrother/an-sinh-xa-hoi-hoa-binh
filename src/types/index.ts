@@ -1,4 +1,5 @@
 export type UserRole = 'ADMIN' | 'OFFICER' | 'CITIZEN';
+export type UserStatus = 'ACTIVE' | 'INACTIVE';
 
 export interface User {
   id: string;
@@ -7,6 +8,9 @@ export interface User {
   role: UserRole;
   avatar?: string;
   password?: string;
+  email?: string;
+  create_date?: string;
+  status?: UserStatus | string;
 }
 
 export interface SocialRecord {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, FolderOpen, FileText, Palette } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, FolderOpen, FileText, Palette, Users } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -13,6 +13,7 @@ export default function Layout() {
   const navItems = [
     { label: 'Bảng điều khiển', path: '/', icon: LayoutDashboard },
     { label: 'Hồ sơ an sinh', path: '/records', icon: ClipboardList },
+    ...(user?.role === 'ADMIN' ? [{ label: 'Người dùng', path: '/users', icon: Users }] : []),
   ];
 
   return (
