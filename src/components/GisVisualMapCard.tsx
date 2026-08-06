@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { MapPin } from 'lucide-react';
-import { RecordItem } from '../RecordContext';
+import { SocialRecord } from '../types';
 
 interface GisVisualMapCardProps {
-  records: RecordItem[];
+  records: SocialRecord[];
   phuongData: { name: string; value: number }[];
   colors: string[];
 }
@@ -28,18 +28,24 @@ export default function GisVisualMapCard({ records, phuongData, colors }: GisVis
 
         {/* Heatmap/Pin Layers */}
         <div className="absolute inset-0 p-8">
-          {records.map((record, i) => (
-            <motion.div
-              key={record.id}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: i * 0.15 }}
-              className="absolute cursor-pointer group/pin"
-              style={{
-                top: `${(record.lat! - 20.81) * 2000 + 40}%`,
-                left: `${(record.lng! - 105.32) * 1500 + 30}%`
-              }}
-            >
+          {records.map((record, i) => {
+            // Generate pseudo-random deterministic positions from record id or index
+            const seed = (record.id || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), i * 37);
+            const topPos = 18 + (seed % 65); // 18% to 83%
+            const leftPos = 15 + ((seed * 31) % 70); // 15% to 85%
+
+            return (
+              <motion.div
+                key={record.id}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: i * 0.08 }}
+                className="absolute cursor-pointer group/pin"
+                style={{
+                  top: `${topPos}%`,
+                  left: `${leftPos}%`
+                }}
+              >
               <div className="relative flex items-center justify-center">
                 <div className="absolute w-10 h-10 bg-rose-500/25 rounded-full animate-ping" />
                 <div className="relative w-3.5 h-3.5 bg-rose-600 rounded-full border-2 border-white shadow-md" />
@@ -55,7 +61,8 @@ export default function GisVisualMapCard({ records, phuongData, colors }: GisVis
                 </div>
               </div>
             </motion.div>
-          ))}
+          );
+        })}
         </div>
 
         {/* Map Legend Overlay */}
