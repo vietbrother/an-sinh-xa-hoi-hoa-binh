@@ -21,13 +21,22 @@ export default function RecordsList() {
   const { records, isLoading, refreshRecords } = useRecords();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterCategories, setFilterCategories] = useState<string[]>(['all']);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<SocialRecord | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Dynamically extract unique categories from records list
+  // Dynamically extract and include predefined categories
   const categories = useMemo(() => {
-    const cats = new Set<string>();
+    const predefined = [
+      'Đối tượng Bảo trợ',
+      'Gia đình chính sách',
+      'Hộ cận nghèo',
+      'Hộ có hoàn cảnh khó khăn',
+      'Hộ khó khăn',
+      'Hộ nghèo'
+    ];
+    const cats = new Set<string>(predefined);
     records.forEach(record => {
       if (record.category && record.category.trim() !== '') {
         cats.add(record.category.trim());
@@ -82,11 +91,16 @@ export default function RecordsList() {
         (record.cccd && record.cccd.toLowerCase().includes(term));
       
       const matchesStatus = filterStatus === 'all' || record.resolutionStatus === filterStatus;
-      const matchesCategory = filterCategory === 'all' || record.category === filterCategory;
+      const matchesCategory = 
+        filterCategories.includes('all') || 
+        filterCategories.length === 0 || 
+        filterCategories.some(cat => 
+          record.category && record.category.toLowerCase().includes(cat.toLowerCase())
+        );
       
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [searchTerm, filterStatus, filterCategory, records]);
+  }, [searchTerm, filterStatus, filterCategories, records]);
 
   const handleProcess = async () => {
     if (!selectedRecord) return;
@@ -167,19 +181,81 @@ export default function RecordsList() {
                 />
             </div>
 
-            {/* Category Filter */}
+            {/* Category Filter Multi-select */}
             <div className="relative">
-                <select 
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                    className="appearance-none pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary shadow-sm font-medium text-slate-600 text-sm max-w-[220px] truncate"
+                <button
+                    type="button"
+                    onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                    className="flex items-center gap-2 pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary shadow-sm font-medium text-slate-700 text-sm max-w-[260px] truncate transition-all"
                 >
-                    <option value="all">Tất cả phân loại ({categories.length})</option>
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                </select>
-                <Tag size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <Tag size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <span className="truncate">
+                        {filterCategories.includes('all') || filterCategories.length === 0
+                            ? 'Tất cả phân loại'
+                            : `Đã chọn (${filterCategories.length})`}
+                    </span>
+                    <ChevronRight size={14} className={cn("absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 transition-transform", isCategoryDropdownOpen && "rotate-90")} />
+                </button>
+
+                {isCategoryDropdownOpen && (
+                    <>
+                        <div 
+                            className="fixed inset-0 z-40" 
+                            onClick={() => setIsCategoryDropdownOpen(false)} 
+                        />
+                        <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-3 space-y-2">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs font-bold text-slate-500">
+                                <span>Lọc theo phân loại</span>
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterCategories(['all'])}
+                                    className="text-brand-primary hover:underline"
+                                >
+                                    Chọn tất cả
+                                </button>
+                            </div>
+                            <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+                                <label className="flex items-center gap-2.5 px-2 py-1.5 hover:bg-slate-50 rounded-xl cursor-pointer text-xs font-medium text-slate-700">
+                                    <input
+                                        type="checkbox"
+                                        checked={filterCategories.includes('all')}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setFilterCategories(['all']);
+                                            } else {
+                                                setFilterCategories([]);
+                                            }
+                                        }}
+                                        className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary/20 w-4 h-4"
+                                    />
+                                    <span>Tất cả phân loại ({categories.length})</span>
+                                </label>
+                                {categories.map((cat) => {
+                                    const isChecked = filterCategories.includes(cat);
+                                    return (
+                                        <label key={cat} className="flex items-center gap-2.5 px-2 py-1.5 hover:bg-slate-50 rounded-xl cursor-pointer text-xs font-medium text-slate-700">
+                                            <input
+                                                type="checkbox"
+                                                checked={isChecked}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        const next = filterCategories.filter(c => c !== 'all');
+                                                        setFilterCategories([...next, cat]);
+                                                    } else {
+                                                        const next = filterCategories.filter(c => c !== cat);
+                                                        setFilterCategories(next.length === 0 ? ['all'] : next);
+                                                    }
+                                                }}
+                                                className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary/20 w-4 h-4"
+                                            />
+                                            <span className="truncate">{cat}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Status Filter */}

@@ -12,6 +12,8 @@ import {
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 import { parse, differenceInMinutes } from 'date-fns';
+import GisPhuongHeatmapMock from '../components/GisPhuongHeatmapMock';
+import CompanionDonorsList from '../components/CompanionDonorsList';
 
 export default function Dashboard() {
   const { records, isLoading } = useRecords();
@@ -375,7 +377,7 @@ export default function Dashboard() {
 
                     {/* Hover Tooltip */}
                     <div className="absolute bottom-full mb-2 opacity-0 group-hover/pin:opacity-100 transition-opacity bg-white p-3 rounded-xl shadow-xl border w-48 pointer-events-none z-10">
-                      <p className="text-xs font-bold truncate">{record.fullName}</p>
+                      <p className="text-xs font-bold truncate">{record.headOfHousehold || record.category}</p>
                       <p className="text-[10px] text-slate-500 mb-1">{record.oldAddress}</p>
                       <div className="flex items-center justify-between text-[9px] font-bold">
                         <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">{record.resolutionStatus}</span>
@@ -399,6 +401,19 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* New GIS Phuong Heatmap Mock Component */}
+      <div className="grid grid-cols-1 gap-8">
+        <GisPhuongHeatmapMock
+          records={records}
+          phuongData={stats.phuongData}
+        />
+      </div>
+
+      {/* Companion Donors List Component */}
+      <div className="grid grid-cols-1 gap-8">
+        <CompanionDonorsList />
       </div>
 
       {/* Advanced metrics section from updated columns */}

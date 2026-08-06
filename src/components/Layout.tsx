@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, FolderOpen, FileText, Palette, Users } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, FolderOpen, FileText, Palette, Users, Paperclip  } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -52,7 +52,7 @@ export default function Layout() {
           })}
 
           {/* Google Drive Links */}
-          <div className="mt-2 px-4">
+          <div className="mt-2 px-4 ml-0">
             <div className="space-y-1">
               <a
                 href="https://drive.google.com/file/d/1t7ZrZOFftnVMVxtHAK3DljEWoUNfYfCb/view"
@@ -60,7 +60,7 @@ export default function Layout() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <FileText size={18} />
+                <Paperclip size={18} />
                 <span className="text-sm">Ds hộ nghèo</span>
               </a>
 
@@ -70,7 +70,7 @@ export default function Layout() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <FileText size={18} />
+                <Paperclip size={18} />
                 <span className="text-sm">Ds hộ cận nghèo</span>
               </a>
 
@@ -80,7 +80,7 @@ export default function Layout() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <FileText size={18} />
+                <Paperclip size={18} />
                 <span className="text-sm">Ds hộ gđ chính sách</span>
               </a>
 
@@ -90,7 +90,7 @@ export default function Layout() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
-                <FileText size={18} />
+                <Paperclip size={18} />
                 <span className="text-sm">Ds bảo trợ XH</span>
               </a>
             </div>

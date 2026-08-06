@@ -175,6 +175,22 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                                 </div>
                               )}
                             </section>
+
+                            {/* Proof Image Section for Citizen View */}
+                            <section className="pt-2">
+                              <label className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-2 block">Hình ảnh minh chứng trao tặng</label>
+                              <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-900 group relative">
+                                <img 
+                                  src={processingData?.proofImageUrl || 'https://s-aicmscdn.vietnamhoinhap.vn/vnhn-media/24/12/19/hoi-chu-thap-do-tinh-hoa-binh--phat-huy-vai-tro-nong-cot-trong-su-nghiep-nhan-dao--an-sinh-xa-hoi_67639b3857aca.jpg?md5=wLVFo_qBp0qBUjtzY47ijw&expires=1785526674'} 
+                                  alt="Hình ảnh minh chứng"
+                                  className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                                  referrerPolicy="no-referrer"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 flex items-end p-4">
+                                  <p className="text-xs text-white font-medium">Hình ảnh trao tặng quà thực tế - Cho đi là còn mãi</p>
+                                </div>
+                              </div>
+                            </section>
                     </div>
                 </div>
               ) : (
@@ -352,6 +368,27 @@ export const RecordsModal: React.FC<RecordsModalProps> = ({
                             <div className="whitespace-pre-line -xs text-slate-600 italic">{selectedRecord.supportHistoryNew || "Không có lịch sử cũ"}</div>
                           </div>
                           <textarea rows={3} value={processingData.supportHistoryLast || ''} onChange={e => setProcessingData({...processingData, supportHistoryLast: e.target.value})} placeholder="Cập nhật diễn biến hỗ trợ mới nhất..." className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800" />
+                      </div>
+                      <div className="md:col-span-2 space-y-2">
+                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hình ảnh minh chứng trao tặng quà</label>
+                         <input 
+                           type="text" 
+                           value={processingData.proofImageUrl || ''} 
+                           onChange={e => setProcessingData({...processingData, proofImageUrl: e.target.value})} 
+                           placeholder="Nhập URL hình ảnh minh chứng (để trống sẽ dùng ảnh mặc định)..." 
+                           className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-primary font-medium text-slate-800 text-xs mb-3" 
+                         />
+                         <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-900 group relative">
+                           <img 
+                             src={processingData?.proofImageUrl || 'https://s-aicmscdn.vietnamhoinhap.vn/vnhn-media/24/12/19/hoi-chu-thap-do-tinh-hoa-binh--phat-huy-vai-tro-nong-cot-trong-su-nghiep-nhan-dao--an-sinh-xa-hoi_67639b3857aca.jpg?md5=wLVFo_qBp0qBUjtzY47ijw&expires=1785526674'} 
+                             alt="Hình ảnh minh chứng"
+                             className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                             referrerPolicy="no-referrer"
+                           />
+                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 flex items-end p-4">
+                             <p className="text-xs text-white font-medium">Hình ảnh trao tặng quà thực tế - Cho đi là còn mãi</p>
+                           </div>
+                         </div>
                       </div>
                     </div>
                   </section>
