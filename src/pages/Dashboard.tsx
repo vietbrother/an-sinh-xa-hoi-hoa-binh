@@ -14,6 +14,55 @@ import { cn } from '../lib/utils';
 import { parse, differenceInMinutes } from 'date-fns';
 import GisPhuongHeatmapMock from '../components/GisPhuongHeatmapMock';
 import CompanionDonorsList from '../components/CompanionDonorsList';
+import RegionalStatsCard from '../components/RegionalStatsCard';
+import GisVisualMapCard from '../components/GisVisualMapCard';
+
+function normalizeWardName(name: string): string {
+  let clean = name.trim();
+  const lower = clean.toLowerCase();
+  if (lower.includes("hòa bình") || lower.includes("hoà bình")) {
+    return "Hòa Bình";
+  }
+  if (lower.includes("trung minh")) {
+    return "Trung Minh";
+  }
+  if (lower.includes("hữu nghị")) {
+    return "Hữu Nghị";
+  }
+  if (lower.includes("thịnh lang")) {
+    return "Thịnh Lang";
+  }
+  if (lower.includes("phương lâm")) {
+    return "Phương Lâm";
+  }
+  if (lower.includes("tân thịnh")) {
+    return "Tân Thịnh";
+  }
+  if (lower.includes("thống nhất")) {
+    return "Thống Nhất";
+  }
+  return clean.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+}
+
+function extractWardName(address: string): string {
+  if (!address) return "Phường Khác";
+
+  const oldWardMatch = address.match(/phường\s+([^,]+?)\s+cũ/i);
+  if (oldWardMatch) {
+    const rawWard = oldWardMatch[1].trim();
+    const normalized = normalizeWardName(rawWard);
+    return `Phường ${normalized} cũ`;
+  }
+
+  const normalWardMatch = address.match(/phường\s+([^,]+)/i);
+  if (normalWardMatch) {
+    const rawWard = normalWardMatch[1].replace(/cũ/gi, '').trim();
+    const normalized = normalizeWardName(rawWard);
+    return `Phường ${normalized}`;
+  }
+
+  return "Phường Khác";
+}
 
 export default function Dashboard() {
   const { records, isLoading } = useRecords();
@@ -62,12 +111,12 @@ export default function Dashboard() {
 
     // Stats by Phuong
     const phuongStats = records.reduce((acc, current) => {
-      const phuong = current.phuong || 'Khác';
-      acc[phuong] = (acc[phuong] || 0) + 1;
+      const wardName = extractWardName(current.oldAddress || current.phuong || '');
+      acc[wardName] = (acc[wardName] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const phuongData = Object.entries(phuongStats).map(([name, value]) => ({ name, value }));
+    const phuongData = Object.entries(phuongStats).map(([name, value]) => ({ name, value: Number(value) })).sort((a, b) => b.value - a.value);
 
     // Stats by Type (Category)
     const categoryStats = records.reduce((acc, current) => {
@@ -310,96 +359,13 @@ export default function Dashboard() {
 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Regional Stats */}
-        <div className="glass-card p-6 flex flex-col space-y-6">
-          <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
-            <MapPin size={16} className="text-brand-accent" />
-            Thống kê theo địa bàn
-          </h3>
-          <div className="grow flex flex-col justify-center">
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={stats.phuongData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={8}
-                  dataKey="value"
-                  animationDuration={1500}
-                >
-                  {stats.phuongData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        {/* Regional Stats Component */}
+        <RegionalStatsCard phuongData={stats.phuongData} />
 
-        {/* GIS Visual Mock */}
-        <div className="lg:col-span-2 glass-card p-6 space-y-6 overflow-hidden">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
-              <MapPin size={16} className="text-brand-primary" />
-              Bản đồ nhiệt mật độ hồ sơ (GIS)
-            </h3>
-            <button className="text-xs font-bold text-brand-primary">
-              Phường Phương Lâm & Hòa Bình
-            </button>
-          </div>
-
-          <div className="relative aspect-[16/9] md:aspect-[21/9] bg-slate-100 rounded-lg overflow-hidden border border-slate-200 group">
-            {/* Mock Map Background */}
-            <div className="absolute inset-0 opacity-40 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/105.3377,20.8172,12,0/800x400?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTAwMHozN282Y3ZmM3FieW0ifQ.F6O-pUvI96YPr9Vxi9v96w')] bg-cover bg-center transition-transform duration-[20s] group-hover:scale-110" />
-
-            {/* Heatmap/Pin Layers */}
-            <div className="absolute inset-0 p-8">
-              {records.map((record, i) => (
-                <motion.div
-                  key={record.id}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: i * 0.2 }}
-                  className="absolute cursor-pointer group/pin"
-                  style={{
-                    top: `${(record.lat! - 20.81) * 2000 + 40}%`,
-                    left: `${(record.lng! - 105.32) * 1500 + 30}%`
-                  }}
-                >
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute w-12 h-12 bg-rose-500/20 rounded-full animate-ping" />
-                    <div className="relative w-4 h-4 bg-rose-600 rounded-full border-2 border-white shadow-lg" />
-
-                    {/* Hover Tooltip */}
-                    <div className="absolute bottom-full mb-2 opacity-0 group-hover/pin:opacity-100 transition-opacity bg-white p-3 rounded-xl shadow-xl border w-48 pointer-events-none z-10">
-                      <p className="text-xs font-bold truncate">{record.headOfHousehold || record.category}</p>
-                      <p className="text-[10px] text-slate-500 mb-1">{record.oldAddress}</p>
-                      <div className="flex items-center justify-between text-[9px] font-bold">
-                        <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">{record.resolutionStatus}</span>
-                        <span className="text-brand-primary">{record.category}</span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Map Legend Overlay */}
-            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl border shadow-lg space-y-2">
-              <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1">Chú giải vùng</p>
-              {stats.phuongData.map((p, i) => (
-                <div key={p.name} className="flex items-center space-x-2 text-xs font-bold text-slate-700">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                  <span>{p.name}: {p.value} hồ sơ</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* GIS Visual Map Card Component */}
+        <div className="lg:col-span-2">
+          <GisVisualMapCard records={records} phuongData={stats.phuongData} colors={COLORS} />
         </div>
       </div>
 
@@ -417,8 +383,9 @@ export default function Dashboard() {
       </div>
 
       {/* Advanced metrics section from updated columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {/* Support Statuses */}
+        {/* 
         <div className="glass-card p-6 flex flex-col space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold flex items-center gap-2 uppercase tracking-tight">
@@ -468,6 +435,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+        */}
 
         {/* Coordinating Units and Support Formats */}
         <div className="glass-card p-6 flex flex-col space-y-6">
