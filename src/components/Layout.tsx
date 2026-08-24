@@ -93,6 +93,16 @@ export default function Layout() {
                 <Paperclip size={18} />
                 <span className="text-sm">Ds bảo trợ XH</span>
               </a>
+
+              <a
+                href="https://drive.google.com/drive/folders/1CAyhZKSYJnGFWZdgZcxfcu9IpY7SXHOf?usp=drive_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+              >
+                <Paperclip size={18} />
+                <span className="text-sm">Ds tài trợ</span>
+              </a>
             </div>
           </div>
         </nav>
