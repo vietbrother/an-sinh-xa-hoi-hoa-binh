@@ -101,7 +101,7 @@ export default function Layout() {
                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
               >
                 <Paperclip size={18} />
-                <span className="text-sm">Ds tài trợ</span>
+                <span className="text-sm">Ds tặng quà</span>
               </a>
             </div>
           </div>
