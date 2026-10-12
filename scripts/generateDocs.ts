@@ -47,7 +47,7 @@ function createHeader(title: string, subtitle: string) {
       children: [
         new TextRun({
           text: subtitle,
-          italic: true,
+          italics: true,
           size: 24, // 12pt
           font: FONT_SANS,
           color: COLOR_SECONDARY,
@@ -74,7 +74,7 @@ function createHeading(text: string, level: any) {
   return new Paragraph({
     heading: level,
     spacing: { before: 240, after: 120 },
-    keepWithNext: true,
+    keepNext: true,
     children: [
       new TextRun({
         text,
@@ -88,13 +88,12 @@ function createHeading(text: string, level: any) {
 
 function createParagraph(text: string, options: { bold?: boolean; italic?: boolean; size?: number; color?: string; before?: number; after?: number } = {}) {
   return new Paragraph({
-    spacing: { before: options.before ?? 60, after: options.after ?? 120 },
-    lineSpacing: { before: 240, line: 360 }, // 1.5 Line spacing
+    spacing: { before: options.before ?? 60, after: options.after ?? 120, line: 360 }, // 1.5 Line spacing
     children: [
       new TextRun({
         text,
         bold: options.bold,
-        italic: options.italic,
+        italics: options.italic,
         size: options.size ?? 24, // 12pt default
         font: FONT_SANS,
         color: options.color ?? COLOR_TEXT,
@@ -106,8 +105,7 @@ function createParagraph(text: string, options: { bold?: boolean; italic?: boole
 function createBulletPoint(boldPrefix: string, text: string) {
   return new Paragraph({
     bullet: { level: 0 },
-    spacing: { before: 40, after: 80 },
-    lineSpacing: { line: 320 },
+    spacing: { before: 40, after: 80, line: 320 },
     children: [
       new TextRun({
         text: boldPrefix,
