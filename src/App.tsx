@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import RecordsList from './pages/RecordsList';
 import UserManagement from './pages/UserManagement';
+import HomePage from './pages/HomePage';
 import Layout from './components/Layout';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: string[] }> = ({ children, roles }) => {
@@ -33,10 +34,31 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: string[] }> 
   }
   
   if (roles && !roles.includes(user?.role || "")) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
   
   return <>{children}</>;
+};
+
+const RootRoute: React.FC = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <HomePage />;
 };
 
 export default function App() {
@@ -45,10 +67,14 @@ export default function App() {
       <RecordProvider>
         <Router>
           <Routes>
+            {/* Public Root: loads HomePage by default if not authenticated; redirects to dashboard if authenticated */}
+            <Route path="/" element={<RootRoute />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             
+            {/* Authenticated Internal Portal Routes */}
             <Route element={<Layout />}>
-              <Route path="/" element={
+              <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>

@@ -14,7 +14,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as any)?.from?.pathname || '/';
+  const rawFrom = (location.state as any)?.from?.pathname;
+  const from = rawFrom && rawFrom !== '/' && rawFrom !== '/home' ? rawFrom : '/dashboard';
 
   useEffect(() => {
     if (isAuthenticated) {

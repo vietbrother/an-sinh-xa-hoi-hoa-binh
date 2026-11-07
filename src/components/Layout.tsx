@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardList, LogOut, User, Menu, X, Users, Paperclip, ExternalLink } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ClipboardList,
+  LogOut,
+  User,
+  Menu,
+  X,
+  Users,
+  Paperclip,
+  ExternalLink,
+  Home,
+  FolderOpen,
+  Eye
+} from 'lucide-react';
 import { useAuth } from '../AuthContext';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import DriveDocumentViewer from './DriveDocumentViewer';
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedDriveDoc, setSelectedDriveDoc] = useState<{ label: string; url: string } | null>(null);
 
   const navItems = [
-    { label: 'Bảng điều khiển', path: '/', icon: LayoutDashboard },
+    { label: 'Trang chủ', path: '/home', icon: Home },
+    { label: 'Bảng điều khiển', path: '/dashboard', icon: LayoutDashboard },
     { label: 'Hồ sơ an sinh', path: '/records', icon: ClipboardList },
     ...(user?.role === 'ADMIN' ? [{ label: 'Người dùng', path: '/users', icon: Users }] : []),
   ];
@@ -76,18 +92,32 @@ export default function Layout() {
 
           {/* Google Drive Links */}
           <div className="mt-2 px-4 ml-0">
+            <p className="px-4 text-[10px] font-black uppercase tracking-wider text-white/50 mb-1">
+              Tài liệu & Danh sách Drive
+            </p>
             <div className="space-y-1">
               {driveLinks.map((link) => (
-                <a
+                <div
                   key={link.label}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-all"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-all group"
                 >
-                  <Paperclip size={18} />
-                  <span className="text-sm">{link.label}</span>
-                </a>
+                  <button
+                    onClick={() => setSelectedDriveDoc(link)}
+                    className="flex items-center space-x-2.5 min-w-0 flex-1 text-left cursor-pointer"
+                  >
+                    <Paperclip size={16} className="shrink-0 text-white/60 group-hover:text-brand-secondary" />
+                    <span className="text-xs truncate font-medium">{link.label}</span>
+                  </button>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Mở tab Drive mới"
+                    className="p-1 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
               ))}
             </div>
           </div>
@@ -176,22 +206,34 @@ export default function Layout() {
               </p>
               <div className="space-y-1">
                 {driveLinks.map((link) => (
-                  <a
+                  <div
                     key={link.label}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-brand-primary transition-all text-sm group"
+                    className="flex items-center justify-between px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-brand-primary transition-all text-sm group"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-brand-primary/10 flex items-center justify-center text-slate-500 group-hover:text-brand-primary transition-colors">
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setSelectedDriveDoc(link);
+                      }}
+                      className="flex items-center space-x-3 flex-1 min-w-0 text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-brand-primary/10 flex items-center justify-center text-slate-500 group-hover:text-brand-primary transition-colors shrink-0">
                         <Paperclip size={16} />
                       </div>
-                      <span className="font-medium text-slate-700 group-hover:text-brand-primary">{link.label}</span>
-                    </div>
-                    <ExternalLink size={14} className="text-slate-400 group-hover:text-brand-primary" />
-                  </a>
+                      <span className="font-medium text-slate-700 group-hover:text-brand-primary truncate">
+                        {link.label}
+                      </span>
+                    </button>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Mở tab Drive mới"
+                      className="p-2 text-slate-400 hover:text-brand-primary"
+                    >
+                      <ExternalLink size={15} />
+                    </a>
+                  </div>
                 ))}
               </div>
             </div>
@@ -236,6 +278,37 @@ export default function Layout() {
       <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <Outlet />
       </main>
+
+      {/* Embedded Drive Document Viewer Modal (opened from sidebar or mobile menu) */}
+      <AnimatePresence>
+        {selectedDriveDoc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/70 backdrop-blur-md animate-fadeIn">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              className="w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl overflow-hidden bg-white shadow-2xl relative"
+            >
+              <div className="absolute top-4 right-4 z-20">
+                <button
+                  onClick={() => setSelectedDriveDoc(null)}
+                  className="w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center transition-all shadow-lg hover:scale-105"
+                  aria-label="Đóng cửa sổ xem"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <DriveDocumentViewer
+                title={selectedDriveDoc.label}
+                url={selectedDriveDoc.url}
+                className="border-0 rounded-none shadow-none flex-1"
+                initialMode={selectedDriveDoc.url.includes('/folders/') ? 'files' : 'embed'}
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

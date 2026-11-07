@@ -55,3 +55,27 @@
   @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
 
+@keyframes fireworkBurst {
+  0% {
+    transform: translate(0, 0) scale(0.2);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+.animate-firework-burst {
+  animation-name: fireworkBurst;
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+
