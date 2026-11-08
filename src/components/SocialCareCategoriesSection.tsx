@@ -287,7 +287,7 @@ export default function SocialCareCategoriesSection() {
                   className="flex-1 py-2.5 px-3 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-xs shadow-md shadow-brand-primary/20 flex items-center justify-center gap-1.5 transition-all group-hover:gap-2"
                 >
                   <Eye size={15} />
-                  <span>Xem tài liệu nhúng</span>
+                  <span>Xem danh sách</span>
                   <ArrowRight size={13} className="opacity-70" />
                 </button>
 
