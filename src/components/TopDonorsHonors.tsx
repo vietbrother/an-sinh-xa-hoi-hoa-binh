@@ -41,7 +41,7 @@ export const DONOR_HONORS_DATA: DonorItem[] = [
   {
     id: '2',
     name: 'Công ty xổ số kiến thiết Hòa Bình',
-    amount: 11800000,
+    amount: 111800000,
     giftCount: 30,
     date: '15/12/2025',
     description: 'Hỗ trợ các hộ gia đình chính sách và hộ cận nghèo nhân dịp Tết Ất Tỵ, chung tay vì cộng đồng.',

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import SocialCareCategoriesSection from '../components/SocialCareCategoriesSection';
 import TopDonorsHonors from '../components/TopDonorsHonors';
+import CountUp from '../components/CountUp';
 import trongDongBg from '../static/trong-dong.jpg';
 
 export default function HomePage() {
@@ -187,20 +188,31 @@ export default function HomePage() {
 
           {/* 4 Pillars Summary Metric Badges */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl mt-12">
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-xl sm:text-2xl font-black text-brand-secondary block">1,248+</span>
+            <div className="bg-white/10 hover:bg-white/15 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center transition-all duration-300 hover:scale-102 hover:border-brand-secondary/40 shadow-sm group">
+              <span className="text-xl sm:text-2xl font-black text-brand-secondary block tracking-tight group-hover:scale-105 transition-transform">
+                <CountUp end={1248} duration={2200} separator="," suffix="+" />
+              </span>
               <span className="text-[11px] sm:text-xs text-white/80 font-medium">Hồ sơ đã số hóa</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-xl sm:text-2xl font-black text-brand-secondary block">7/7</span>
+
+            <div className="bg-white/10 hover:bg-white/15 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center transition-all duration-300 hover:scale-102 hover:border-brand-secondary/40 shadow-sm group">
+              <span className="text-xl sm:text-2xl font-black text-brand-secondary block tracking-tight group-hover:scale-105 transition-transform">
+                <CountUp end={7} duration={1600} suffix="/7" />
+              </span>
               <span className="text-[11px] sm:text-xs text-white/80 font-medium">Phường/Xã phủ sóng GIS</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-xl sm:text-2xl font-black text-brand-secondary block">196.3+ Tr</span>
+
+            <div className="bg-white/10 hover:bg-white/15 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center transition-all duration-300 hover:scale-102 hover:border-brand-secondary/40 shadow-sm group">
+              <span className="text-xl sm:text-2xl font-black text-brand-secondary block tracking-tight group-hover:scale-105 transition-transform">
+                <CountUp end={196.3} decimals={1} duration={2400} suffix="+ Tr" />
+              </span>
               <span className="text-[11px] sm:text-xs text-white/80 font-medium">Kinh phí đã vận động</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center">
-              <span className="text-xl sm:text-2xl font-black text-brand-secondary block">100%</span>
+
+            <div className="bg-white/10 hover:bg-white/15 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-center transition-all duration-300 hover:scale-102 hover:border-brand-secondary/40 shadow-sm group">
+              <span className="text-xl sm:text-2xl font-black text-brand-secondary block tracking-tight group-hover:scale-105 transition-transform">
+                <CountUp end={100} duration={2000} suffix="%" />
+              </span>
               <span className="text-[11px] sm:text-xs text-white/80 font-medium">Đúng đối tượng thụ hưởng</span>
             </div>
           </div>
